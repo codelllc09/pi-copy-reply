@@ -1,23 +1,26 @@
 /**
- * /copy — 把某条助手回复复制到系统剪贴板
+ * /copy — copy a past assistant reply to the system clipboard
  *
- * 用法：
- *   /copy           弹出选择列表（最新在前），回车复制整条回复
- *   /copy last      直接复制最近一条回复
- *   /copy 3         复制倒数第 3 条回复
+ * Usage:
+ *   /copy           open a picker over recent replies (newest first, with
+ *                   time / first-line preview / char count); Enter copies
+ *   /copy last      copy the most recent reply directly
+ *   /copy 3         copy the 3rd-most-recent reply
  *
- * 相关内置功能（不用本扩展也行）：
- *   Ctrl+X          复制最后一条助手回复（fullscreen 下有选区时复制选区）
- *   /tree + Ctrl+X  在树里选中任意消息后复制该消息
+ * Related built-ins (work without this extension):
+ *   Ctrl+X          copy the last assistant reply (or the active selection)
+ *   /tree + Ctrl+X  copy any selected message from the session tree
  *
- * 剪贴板优先走 pi 内置 native clipboard，失败则退回 wl-copy / xsel。
+ * Clipboard: prefers Pi's native clipboard helper, falls back to
+ * wl-copy / xsel. Copies raw Markdown (code fences, lists), not the
+ * rendered screen text.
  */
 import { spawn } from "node:child_process";
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { getNativeClipboard } from "@earendil-works/pi-tui";
 
 interface Reply {
-	n: number; // 倒数序号，1 = 最新
+	n: number; // 1-based index from the oldest reply
 	text: string;
 	time: string;
 }
@@ -82,16 +85,16 @@ function preview(reply: Reply, total: number): string {
 		.replace(/[*_`>#-]/g, "")
 		.trim()
 		.slice(0, 48);
-	return `${String(total - reply.n + 1).padStart(2)}  ${reply.time}  ${first}  (${reply.text.length} 字)`;
+	return `${String(total - reply.n + 1).padStart(2)}  ${reply.time}  ${first}  (${reply.text.length} chars)`;
 }
 
 export default function (pi: ExtensionAPI) {
 	pi.registerCommand("copy", {
-		description: "复制某条助手回复到剪贴板（/copy 选择 · /copy last 最新 · /copy N 倒数第N条）",
+		description: "Copy an assistant reply to the clipboard (/copy picker · /copy last · /copy N)",
 		handler: async (args, ctx) => {
 			const replies = collectReplies(() => ctx.sessionManager.getBranch());
 			if (replies.length === 0) {
-				ctx.ui.notify("本会话还没有可复制的助手回复", "warning");
+				ctx.ui.notify("No assistant replies to copy yet", "warning");
 				return;
 			}
 
@@ -100,30 +103,30 @@ export default function (pi: ExtensionAPI) {
 
 			if (arg === "") {
 				if (!ctx.hasUI) {
-					ctx.ui.notify("当前模式不支持交互选择，请用 /copy last 或 /copy N", "warning");
+					ctx.ui.notify("Interactive picker unavailable here; use /copy last or /copy N", "warning");
 					return;
 				}
-				const options = replies.map((r) => preview(r, replies.length)).reverse(); // 最新在前
-				const picked = await ctx.ui.select("复制哪条回复？（最新在前）", options);
+				const options = replies.map((r) => preview(r, replies.length)).reverse(); // newest first
+				const picked = await ctx.ui.select("Copy which reply? (newest first)", options);
 				if (!picked) return;
 				const n = replies.length - Number(picked.trim().split(/\s+/)[0]) + 1;
 				chosen = replies.find((r) => r.n === n);
 			} else if (/^\d+$/.test(arg)) {
 				chosen = replies.find((r) => r.n === Number(arg));
-			} else if (arg.toLowerCase() === "last" || arg === "最新") {
+			} else if (arg.toLowerCase() === "last") {
 				chosen = replies[replies.length - 1];
 			} else {
-				ctx.ui.notify("用法：/copy · /copy last · /copy N", "warning");
+				ctx.ui.notify("Usage: /copy · /copy last · /copy N", "warning");
 				return;
 			}
 
 			if (!chosen) {
-				ctx.ui.notify(`没有找到第 ${arg} 条回复（共 ${replies.length} 条）`, "warning");
+				ctx.ui.notify(`No reply #${arg} (found ${replies.length} replies)`, "warning");
 				return;
 			}
 			const ok = await copyText(chosen.text);
 			ctx.ui.notify(
-				ok ? `已复制第 ${chosen.n} 条回复（${chosen.text.length} 字）` : "复制失败：未找到可用的剪贴板工具",
+				ok ? `Copied reply #${chosen.n} (${chosen.text.length} chars)` : "Copy failed: no clipboard tool found",
 				ok ? "info" : "error",
 			);
 		},
