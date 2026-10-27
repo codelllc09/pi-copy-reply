@@ -24,7 +24,7 @@ over recent replies — Enter copies the whole message.
 ## Install
 
 ```bash
-pi install git:github.com/codelllc09/pi-copy-reply
+pi install npm:pi-copy-reply
 ```
 
 Or try it once without installing:

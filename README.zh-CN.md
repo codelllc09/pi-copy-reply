@@ -23,7 +23,7 @@ Pi 内置的 `Ctrl+X` 只能复制**最后一条**回复；要从长会话里捞
 ## 安装
 
 ```bash
-pi install git:github.com/codelllc09/pi-copy-reply
+pi install npm:pi-copy-reply
 ```
 
 或试运行一次（不写入配置）：
