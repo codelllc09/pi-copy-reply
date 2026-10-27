@@ -4,17 +4,17 @@
 
 Copy any past assistant reply to the system clipboard.
 
-Pi's built-in `Ctrl+X` only copies the *last* reply; pulling an older one out
-of a long session meant navigating `/tree`. This tiny extension adds a picker
-over recent replies — Enter copies the whole message.
+Pi's built-in `Ctrl+X` and `/copy` (Pi 1.4+) both copy the *last* reply; pulling
+an older one out of a long session meant navigating `/tree`. This tiny extension
+adds a picker over recent replies — Enter copies the whole message.
 
 ## Usage
 
 ```
-/copy          open a picker (newest first, with time / first-line preview /
+/copy-reply     open a picker (newest first, with time / first-line preview /
                char count); Enter copies the full reply
-/copy last     copy the most recent reply directly
-/copy 3        copy the 3rd-most-recent reply
+/copy-reply last  copy the most recent reply
+/copy-reply 3     copy the 3rd-most-recent reply
 ```
 
 - Copies **raw Markdown** (code fences, lists), not rendered screen text

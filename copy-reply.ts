@@ -1,11 +1,13 @@
 /**
- * /copy — copy a past assistant reply to the system clipboard
+ * /copy-reply — copy a past assistant reply to the system clipboard
+ * (named /copy-reply since Pi 1.4 added a built-in /copy for the last message)
  *
  * Usage:
- *   /copy           open a picker over recent replies (newest first, with
+ *   /copy-reply     open a picker over recent replies (newest first, with
  *                   time / first-line preview / char count); Enter copies
- *   /copy last      copy the most recent reply directly
- *   /copy 3         copy the 3rd-most-recent reply
+ *   /copy-reply last  copy the most recent reply directly
+ *   (built-in /copy also does this since Pi 1.4)
+ *   /copy-reply 3     copy the 3rd-most-recent reply
  *
  * Related built-ins (work without this extension):
  *   Ctrl+X          copy the last assistant reply (or the active selection)
@@ -89,8 +91,8 @@ function preview(reply: Reply, total: number): string {
 }
 
 export default function (pi: ExtensionAPI) {
-	pi.registerCommand("copy", {
-		description: "Copy an assistant reply to the clipboard (/copy picker · /copy last · /copy N)",
+	pi.registerCommand("copy-reply", {
+		description: "Copy a past assistant reply to the clipboard (/copy-reply picker · /copy-reply last · /copy-reply N)",
 		handler: async (args, ctx) => {
 			const replies = collectReplies(() => ctx.sessionManager.getBranch());
 			if (replies.length === 0) {
@@ -103,7 +105,7 @@ export default function (pi: ExtensionAPI) {
 
 			if (arg === "") {
 				if (!ctx.hasUI) {
-					ctx.ui.notify("Interactive picker unavailable here; use /copy last or /copy N", "warning");
+					ctx.ui.notify("Interactive picker unavailable here; use /copy-reply last or /copy-reply N", "warning");
 					return;
 				}
 				const options = replies.map((r) => preview(r, replies.length)).reverse(); // newest first
@@ -116,7 +118,7 @@ export default function (pi: ExtensionAPI) {
 			} else if (arg.toLowerCase() === "last") {
 				chosen = replies[replies.length - 1];
 			} else {
-				ctx.ui.notify("Usage: /copy · /copy last · /copy N", "warning");
+				ctx.ui.notify("Usage: /copy-reply · /copy-reply last · /copy-reply N", "warning");
 				return;
 			}
 
