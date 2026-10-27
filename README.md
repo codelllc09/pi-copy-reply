@@ -1,30 +1,33 @@
+**English** · [简体中文](./README.zh-CN.md)
+
 # pi-copy-reply
 
-把任意一条历史助手回复复制到系统剪贴板。
+Copy any past assistant reply to the system clipboard.
 
-Pi 内置的 `Ctrl+X` 只能复制**最后一条**回复；要从几十轮对话里捞一条旧的，
-只能进 `/tree` 选中再复制。这个小扩展补上这个缺口：弹出最近回复的预览列表，
-回车即整条复制。
+Pi's built-in `Ctrl+X` only copies the *last* reply; pulling an older one out
+of a long session meant navigating `/tree`. This tiny extension adds a picker
+over recent replies — Enter copies the whole message.
 
-## 用法
+## Usage
 
 ```
-/copy          弹出选择列表（最新在前，显示时间/首行预览/字数），回车复制整条
-/copy last     直接复制最近一条
-/copy 3        复制倒数第 3 条
+/copy          open a picker (newest first, with time / first-line preview /
+               char count); Enter copies the full reply
+/copy last     copy the most recent reply directly
+/copy 3        copy the 3rd-most-recent reply
 ```
 
-- 剪贴板优先走 pi 内置 native clipboard，失败自动退回 `wl-copy` / `xsel`
-- 复制的是**原始 Markdown**（含代码块、列表语法），不是渲染后的屏幕文本
-- 无依赖、无配置
+- Copies **raw Markdown** (code fences, lists), not rendered screen text
+- Prefers Pi's native clipboard helper; falls back to `wl-copy` / `xsel`
+- Zero dependencies, zero configuration
 
-## 安装
+## Install
 
 ```bash
 pi install git:github.com/codelllc09/pi-copy-reply
 ```
 
-或试运行一次：
+Or try it once without installing:
 
 ```bash
 pi -e git:github.com/codelllc09/pi-copy-reply
@@ -32,11 +35,4 @@ pi -e git:github.com/codelllc09/pi-copy-reply
 
 ## License
 
-0BSD — 随便用，不用署名。
-
----
-
-**English** — Copy any past assistant reply to the system clipboard.
-Pi's built-in `Ctrl+X` only copies the *last* reply; this adds a picker over
-recent replies (plus `/copy last` / `/copy N`). Copies raw Markdown via the
-native clipboard with `wl-copy`/`xsel` fallback. Zero dependencies. 0BSD.
+0BSD — do whatever you want, no attribution required.
