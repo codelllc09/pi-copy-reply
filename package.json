@@ -1,27 +1,27 @@
 {
-	"name": "pi-copy-reply",
-	"version": "0.2.0",
-	"description": "Copy any past assistant reply to the clipboard from Pi (/copy picker, last, or Nth)",
-	"license": "0BSD",
-	"keywords": [
-		"clipboard",
-		"pi",
-		"pi-extension",
-		"pi-package"
-	],
-	"pi": {
-		"extensions": [
-			"./copy-reply.ts"
-		]
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/codelllc09/pi-copy-reply.git"
-	},
-	"homepage": "https://github.com/codelllc09/pi-copy-reply#readme",
-	"bugs": "https://github.com/codelllc09/pi-copy-reply/issues",
-	"peerDependencies": {
-		"@earendil-works/pi-coding-agent": "*",
-		"@earendil-works/pi-tui": "*"
-	}
+  "name": "pi-copy-reply",
+  "version": "0.2.1",
+  "description": "Copy any past assistant reply to the clipboard from Pi (/copy picker, last, or Nth)",
+  "license": "0BSD",
+  "keywords": [
+    "clipboard",
+    "pi",
+    "pi-extension",
+    "pi-package"
+  ],
+  "pi": {
+    "extensions": [
+      "./copy-reply.ts"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codelllc09/pi-copy-reply.git"
+  },
+  "homepage": "https://github.com/codelllc09/pi-copy-reply#readme",
+  "bugs": "https://github.com/codelllc09/pi-copy-reply/issues",
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*",
+    "@earendil-works/pi-tui": "*"
+  }
 }
