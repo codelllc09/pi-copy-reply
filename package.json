@@ -1,14 +1,25 @@
 {
   "name": "pi-copy-reply",
-  "version": "0.2.1",
-  "description": "Copy any past assistant reply to the clipboard from Pi (/copy picker, last, or Nth)",
-  "license": "0BSD",
+  "version": "0.3.0",
+  "description": "Copy any past assistant reply to the clipboard from Pi (/copy-reply two-pane picker, last, or Nth-newest)",
+  "license": "MIT",
   "keywords": [
     "clipboard",
     "pi",
     "pi-extension",
     "pi-package"
   ],
+  "files": [
+    "copy-reply.ts",
+    "README.md",
+    "docs",
+    "LICENSE"
+  ],
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "prepublishOnly": "npm run typecheck && npm test"
+  },
   "pi": {
     "extensions": [
       "./copy-reply.ts"
@@ -19,9 +30,17 @@
     "url": "git+https://github.com/codelllc09/pi-copy-reply.git"
   },
   "homepage": "https://github.com/codelllc09/pi-copy-reply#readme",
-  "bugs": "https://github.com/codelllc09/pi-copy-reply/issues",
+  "bugs": {
+    "url": "https://github.com/codelllc09/pi-copy-reply/issues"
+  },
   "peerDependencies": {
     "@earendil-works/pi-coding-agent": "*",
     "@earendil-works/pi-tui": "*"
+  },
+  "devDependencies": {
+    "@earendil-works/pi-coding-agent": "1.4.0",
+    "@earendil-works/pi-tui": "1.4.0",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
   }
 }

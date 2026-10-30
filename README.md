@@ -11,11 +11,18 @@ adds a picker over recent replies — Enter copies the whole message.
 ## Usage
 
 ```
-/copy-reply     open a picker (newest first, with time / first-line preview /
-               char count); Enter copies the full reply
+/copy-reply     open a picker (newest first): list pane + live preview of the
+               highlighted reply; Enter copies the full reply
 /copy-reply last  copy the most recent reply
 /copy-reply 3     copy the 3rd-most-recent reply
 ```
+
+Picker keys: `↑↓`/`PgUp/PgDn` move · `Enter` copy · `v` full view
+(scrollable, keeps blank lines and indentation) · `Esc` cancel/back. Mouse:
+wheel moves (or scrolls in full view), click selects, double-click copies.
+Numbering is "1 = newest" everywhere — picker rows, `/copy-reply N`, and
+`last` all agree. On Pi versions without `ctx.ui.custom()` the picker falls
+back to a plain one-line list.
 
 - Copies **raw Markdown** (code fences, lists), not rendered screen text
 - Prefers Pi's native clipboard helper; falls back to `wl-copy` / `xsel`
@@ -35,4 +42,4 @@ pi -e git:github.com/codelllc09/pi-copy-reply
 
 ## License
 
-0BSD — do whatever you want, no attribution required.
+MIT — see [LICENSE](./LICENSE).

@@ -11,10 +11,15 @@ Pi 内置的 `Ctrl+X` 和 `/copy`（Pi 1.4+）都只能复制**最后一条**回
 ## 用法
 
 ```
-/copy-reply     弹出选择列表（最新在前，显示时间/首行预览/字数），回车复制整条
+/copy-reply     弹出选择器（最新在前）：列表 + 高亮回复的实时预览，回车复制整条
 /copy-reply last  直接复制最近一条
 /copy-reply 3     复制倒数第 3 条
 ```
+
+选择器键位：`↑↓`/`PgUp/PgDn` 移动 · `Enter` 复制 · `v` 全文视图（可滚动，
+保留空行与缩进）· `Esc` 取消/返回。鼠标：滚轮移动（全文视图内滚动），
+单击选中，双击复制。序号统一“1 = 最新”——选择器行、`/copy-reply N`、
+`last` 三处一致。旧版 pi 无 `ctx.ui.custom()` 时退回单行列表。
 
 - 复制的是**原始 Markdown**（含代码块、列表语法），不是渲染后的屏幕文本
 - 剪贴板优先走 pi 内置 native clipboard，失败自动退回 `wl-copy` / `xsel`
@@ -34,4 +39,4 @@ pi -e git:github.com/codelllc09/pi-copy-reply
 
 ## 许可证
 
-0BSD — 随便用，不用署名。
+MIT — 见 [LICENSE](../LICENSE)。
