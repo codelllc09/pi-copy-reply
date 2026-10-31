@@ -1,6 +1,6 @@
 {
   "name": "pi-copy-reply",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Copy any past assistant reply to the clipboard from Pi (/copy-reply two-pane picker, last, or Nth-newest)",
   "license": "MIT",
   "keywords": [
