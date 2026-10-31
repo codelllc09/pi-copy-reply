@@ -44,12 +44,16 @@ function mountPicker(...branchOldestFirst: string[]) {
 		hasUI: true,
 		mode: "tui",
 		sessionManager: {
+			// One turn per text (user message → final assistant reply), newest-last.
 			getBranch: () =>
-				branchOldestFirst.map((text, i) => ({
+				branchOldestFirst.flatMap((text, i) => [
+					{ type: "message", message: { role: "user", content: [{ type: "text", text: `q${i}` }] } },
+					{
 					type: "message",
 					message: { role: "assistant", content: [{ type: "text", text }] },
 					timestamp: `2026-10-01T1${i}:0${i}:00Z`,
-				})),
+				},
+				]),
 		},
 		ui: {
 			notify: (msg: string, level: string) => notifies.push(`${level}: ${msg}`),

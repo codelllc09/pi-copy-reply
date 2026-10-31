@@ -2,19 +2,21 @@
 
 # pi-copy-reply
 
-Copy any past assistant reply to the system clipboard.
+Copy the final reply of any past turn to the system clipboard.
 
-Pi's built-in `Ctrl+X` and `/copy` (Pi 1.4+) both copy the *last* reply; pulling
-an older one out of a long session meant navigating `/tree`. This tiny extension
-adds a picker over recent replies — Enter copies the whole message.
+Pi's built-in `Ctrl+X` and `/copy` (Pi 1.4+) copy the *last* message, and
+`/tree` + `Ctrl+X` reaches any single message. What had no shortcut was a
+turn's final answer — the reply the agent hands back after its tool calls.
+This tiny extension adds a picker over recent turns; Enter copies the
+highlighted turn's final reply (mid-turn progress notes are skipped).
 
 ## Usage
 
 ```
 /copy-reply     open a picker (newest first): list pane + live preview of the
-               highlighted reply; Enter copies the full reply
-/copy-reply last  copy the most recent reply
-/copy-reply 3     copy the 3rd-most-recent reply
+               highlighted turn; Enter copies its final reply
+/copy-reply last  copy the final reply of the most recent turn
+/copy-reply 3     copy the final reply of the 3rd-most-recent turn
 ```
 
 Picker keys: `↑↓`/`PgUp/PgDn` move · `Enter` copy · `v` full view

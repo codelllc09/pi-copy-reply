@@ -1,11 +1,12 @@
 /**
- * /copy-reply — copy a past assistant reply to the system clipboard
- * (named /copy-reply since Pi 1.4 added a built-in /copy for the last message)
+ * /copy-reply — copy the final reply of a past user turn to the system
+ * clipboard (named /copy-reply since Pi 1.4 added a built-in /copy for the
+ * last message)
  *
  * Usage:
- *   /copy-reply     open a picker over recent replies (newest first): list
- *                   pane + live multi-line preview of the highlighted reply,
- *                   Enter copies
+ *   /copy-reply     open a picker over recent turns (newest first): list
+ *                   pane + live multi-line preview of the highlighted
+ *                   turn's final reply, Enter copies
  *   /copy-reply last  copy the most recent reply directly
  *   /copy-reply 3     copy the 3rd-most-recent reply directly
  *
@@ -58,24 +59,43 @@ export interface BranchEntry {
 	timestamp?: string;
 }
 
-/** Collect assistant replies from a session branch, newest-first numbering. */
+/** Collect assistant replies from a session branch, newest-first numbering.
+ *
+ * Pi stores one assistant message per LLM call, so a single logical reply
+ * spans several messages around tool results. A reply here is the final
+ * answer of one user turn: the LAST message with non-empty text between
+ * two user messages. Mid-turn texts are the agent thinking aloud while
+ * working (still reachable via /tree + Ctrl+X). Non-user entries — tool
+ * results, thinking-only messages, extension-injected ones — never split
+ * a turn. */
 export function collectReplies(getBranch: () => BranchEntry[]): Reply[] {
-	const found: Array<{ text: string; time: string }> = [];
+	const turns: Array<{ text: string; time: string }> = [];
+	let last: { text: string; time: string } | undefined; // newest text in the open turn
+	const closeTurn = () => {
+		if (last) turns.push(last);
+		last = undefined;
+	};
 	for (const entry of getBranch()) {
 		if (entry.type !== "message") continue;
 		const message = entry.message as MessageLike | undefined;
-		if (!message || message.role !== "assistant") continue;
+		if (!message) continue;
+		if (message.role === "user") {
+			closeTurn(); // a user message starts the next turn
+			continue;
+		}
+		if (message.role !== "assistant") continue;
 		const text = (message.content ?? [])
 			.filter((b) => b.type === "text" && b.text && b.text.trim())
 			.map((b) => b.text as string)
 			.join("\n\n")
 			.trim();
-		if (!text) continue;
-		found.push({ text, time: (entry.timestamp ?? "").slice(11, 16) });
+		if (!text) continue; // thinking/tool-call-only messages never end a turn
+		last = { text, time: (entry.timestamp ?? "").slice(11, 16) };
 	}
+	closeTurn();
 	// Newest first; number 1 = newest so picker rows and /copy-reply N agree.
-	found.reverse();
-	return found.map((r, i) => ({ n: i + 1, ...r }));
+	turns.reverse();
+	return turns.map((r, i) => ({ n: i + 1, ...r }));
 }
 
 /** First non-empty line as a one-line peek: leading Markdown markers and
@@ -370,7 +390,7 @@ function pickReply(ctx: ExtensionContext, replies: Reply[]): Promise<Reply | und
 
 export default function (pi: ExtensionAPI) {
 	pi.registerCommand("copy-reply", {
-		description: "Copy a past assistant reply to the clipboard (/copy-reply picker · /copy-reply last · /copy-reply N = nth-newest)",
+		description: "Copy the final reply of a past turn (/copy-reply picker · /copy-reply last · /copy-reply N = nth-newest)",
 		handler: async (args, ctx) => {
 			const replies = collectReplies(() => ctx.sessionManager.getBranch());
 			if (replies.length === 0) {
